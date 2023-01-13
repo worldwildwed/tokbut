@@ -15,6 +15,7 @@ class Ticket(models.Model):
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE )
     created_at = models.DateTimeField(auto_now_add=True)
+    valid_till = models.DateTimeField()
     updated_at = models.DateTimeField(blank=True, null=True, default=None) # when user tokbut save ts else null
     status = models.CharField(max_length=4, choices=TICKET_STATUS)
     detail = models.CharField(max_length=50, null=True)
@@ -25,10 +26,16 @@ class Ticket(models.Model):
 
 class TicketQueue(models.Model):
     
+    TICKET_QUEUE_STATUS = (
+        ('init', 'Init'),
+        ('done', 'Done')
+    )
+
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=TICKET_QUEUE_STATUS, default='init')
 
     def __str__(self):
         return 'from {} till {}'.format(self.started_at, self.ended_at)
